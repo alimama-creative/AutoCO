@@ -13,7 +13,6 @@ from torch.autograd import Variable
 import time
 import utils
 from train import train
-from models import DSNAS
 from vartional_model import DSNAS_v, NASP_v, MAX_v, PLUS_v, CONCAT_v, MIN_v, MULTIPLY_v, NASP
 from baseline import FM, FM_v, FM_v2, Random, Egreedy, Thompson, LinUCB, LinEGreedy, LinThompson
 
@@ -86,24 +85,7 @@ def main():
         train_queue = utils.get_data_queue(args, False)
     logging.info('prepare data finish! [%f]' % (time.time() - data_start))
 
-    if args.mode == "DSNAS":
-        model = DSNAS(args.embedding_dim, args.weight_decay, args)
-        g, gp = model.genotype()
-        logging.info('genotype: %s' % g)
-        logging.info('genotype_p: %s' % gp)
-
-        optimizer = torch.optim.Adagrad([param for name, param in model.named_parameters() if name != 'log_alpha'], args.lr)
-        arch_optimizer = torch.optim.Adam(
-            [param for name, param in model.named_parameters() if name == 'log_alpha'],
-            lr=args.arch_lr,
-            betas=(0.5, 0.999),
-            weight_decay=0.0
-        )
-        for search_epoch in range(1):
-            g, gp, loss, rewards = train(train_queue, model, optimizer, arch_optimizer, logging)
-            logging.info('genotype: %s' % g)
-            logging.info('genotype_p: %s' % gp)
-    elif args.mode == "DSNAS_v":
+    if args.mode == "DSNAS_v":
         model = DSNAS_v(args.embedding_dim, args.weight_decay, args)
         g, gp = model.genotype()
         logging.info('genotype: %s' % g)
@@ -285,7 +267,5 @@ def main():
     else:
         raise ValueError("bad choice!")
 
-#python main.py --mode="sif" --dataset="mushroom"
-#python main.py --mode="DSNAS" --dataset="mushroom" --gen_max_child --early_fix_arch --arch_lr=0.001
 if __name__ == '__main__':
     main()
