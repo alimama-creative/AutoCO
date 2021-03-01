@@ -1,2 +1,2 @@
 # AutoCO
-Codes for paper "Automated Creative Optimization for E-Commerce Advertising"
+Codes for public dataset adult and mushroom.
