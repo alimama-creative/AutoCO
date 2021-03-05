@@ -93,7 +93,7 @@ Interaction/
 
 #### Generation of data
 
-1. collect the online log
+1. download the online from dataset/data_nas/rawdata/download_log_online.url
 2. preprocess the log. run data_loader.py
 
    1. dataset.pkl ： log
